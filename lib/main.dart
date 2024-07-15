@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'splash.dart';
 import 'brandintro.dart';
@@ -12,11 +11,10 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Deaf & Dumb App',
+      title: 'SilentVoice',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
