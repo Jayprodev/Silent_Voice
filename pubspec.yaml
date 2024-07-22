@@ -15,9 +15,21 @@ dependencies:
   flutter_launcher_icons: ^0.9.3
   sqflite: ^2.0.0+4
   path: ^1.8.0
+  image_picker: ^0.8.4+1
+  path_provider: ^2.0.7
+  permission_handler: ^10.0.0+2
+  speech_to_text: ^6.5.1
+  translator: ^0.1.7
+  url_launcher: ^6.0.3
+  firebase_auth: ^4.19.4
+  firebase_core: ^2.30.1
+  firebase_messaging: ^14.9.1
+  firebase_storage: ^11.7.4
+  google_sign_in: ^6.2.1
+  http: ^0.13.3
 
 flutter_icons:
-  image_path: "lib/assets/logo21.jpg"
+  image_path: "lib/assets/logo2e.jpeg"
   android: true
   ios: true
 
@@ -39,7 +51,47 @@ flutter:
     - lib/assets/logo21.jpg
     - lib/assets/sign-language slide 2.png
     - lib/assets/signlang1.jpg
-    - lib\assets\slide 3.jpg
+    - lib/assets/slide 3.jpg
+    - lib/assets/logo2e.jpeg
+    - lib/assets/Letter A.png
+    - lib/assets/Letter B.png
+    - lib/assets/Letter C.png
+    - lib/assets/Letter D.png
+    - lib/assets/Letter E.png
+    - lib/assets/Letter F.png
+    - lib/assets/Letter G.png
+    - lib/assets/Letter H.png
+    - lib/assets/Letter I.png
+    - lib/assets/Letter J.png
+    - lib/assets/Letter K.png
+    - lib/assets/Letter L.png
+    - lib/assets/Letter M.png
+    - lib/assets/Letter N.png
+    - lib/assets/Letter O.png
+    - lib/assets/Letter P.png
+    - lib/assets/Letter Q.png
+    - lib/assets/Letter R.png
+    - lib/assets/Letter S.png
+    - lib/assets/Letter T.png
+    - lib/assets/Letter U.png
+    - lib/assets/Letter W.png
+    - lib/assets/Letter X.png
+    - lib/assets/Letter Y.jpg
+    - lib/assets/Letter Z.png
+    - lib/assets/Lettter V.png
+
+    - lib/assets/Number 0.png
+    - lib/assets/Number 1.png
+    - lib/assets/Number 2.png
+    - lib/assets/Number 3.png
+    - lib/assets/Number 4.png
+    - lib/assets/Number 5.png
+    - lib/assets/Number 6.png
+    - lib/assets/Number 7.png
+    - lib/assets/Number 8.png
+    - lib/assets/Number 9.jpg
+    
+    
 
   # To add assets to your application, add an assets section, like this:
   # assets:

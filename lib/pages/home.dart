@@ -1,16 +1,42 @@
+import 'package:SilentVoice/business/language_identification.dart';
+import 'package:SilentVoice/business/sign_to_text.dart';
+import 'package:SilentVoice/business/text_to_sign.dart';
+import 'package:SilentVoice/business/voice_to_text.dart';
 import 'package:flutter/material.dart';
 import 'navigation_drawer.dart' as customDrawer;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../business/emergency_contacts.dart'; 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  void _loadUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('userName');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: Text('SilentVoice'),
         backgroundColor: Colors.blue,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
+            icon: Icon(Icons.menu),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
@@ -22,13 +48,13 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Hello, Good morning\nDamaris",
+                      "Hello, Good morning\n$userName",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -54,47 +80,78 @@ class HomeScreen extends StatelessWidget {
                       context,
                       "Text to Sign",
                       Icons.text_fields,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TextToSignScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
                       "Image to Sign",
                       Icons.image,
+                      () {},
                     ),
                     _buildFeatureCard(
                       context,
                       "Voice to Sign",
                       Icons.mic,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => VoiceToTextScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
                       "Sign to Text",
                       Icons.translate,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignToTextScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
-                      "Object Detection",
-                      Icons.camera,
+                      "Emergency Contacts",
+                      Icons.contacts,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EmergencyContactsScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
                       "Language Identification",
                       Icons.language,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LanguageIdentificationScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.home, color: Colors.white),
+                      icon: Icon(Icons.home, color: Colors.white),
                       onPressed: () {},
                     ),
                     IconButton(
-                      icon: const Icon(Icons.message, color: Colors.white),
+                      icon: Icon(Icons.message, color: Colors.white),
                       onPressed: () {},
                     ),
                   ],
@@ -107,24 +164,24 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard(BuildContext context, String title, IconData icon) {
+  Widget _buildFeatureCard(BuildContext context, String title, IconData icon, Function onTap) {
     return Card(
       color: Colors.white.withOpacity(0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () => onTap(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 50, color: Colors.white),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Center(
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
