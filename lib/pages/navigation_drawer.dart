@@ -14,7 +14,7 @@ class NavigationDrawer extends StatelessWidget {
                 color: Colors.blue,
               ),
               child: Text(
-                'Let\'s Talk',
+                'SilentVoice',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -32,38 +32,52 @@ class NavigationDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.text_fields),
             title: Text('Text to Sign'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/text_to_sign');
+            },
           ),
           ListTile(
             leading: Icon(Icons.image),
             title: Text('Image to Sign'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/image_to_sign');
+            },
           ),
           ListTile(
             leading: Icon(Icons.mic),
             title: Text('Voice to Sign'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/voice_to_sign');
+            },
           ),
           ListTile(
             leading: Icon(Icons.translate),
             title: Text('Sign to Text'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/sign_to_text');
+            },
           ),
           ListTile(
             leading: Icon(Icons.camera),
-            title: Text('Object Detection'),
-            onTap: () {},
+            title: Text('Emergency Contacts'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/emergency_contacts');
+            },
           ),
           ListTile(
             leading: Icon(Icons.language),
             title: Text('Language Identification'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/language_identification');
+            },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/settings');
+            },
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),

@@ -1,8 +1,11 @@
+import 'package:SilentVoice/business/language_identification.dart';
+import 'package:SilentVoice/business/sign_to_text.dart';
 import 'package:SilentVoice/business/text_to_sign.dart';
+import 'package:SilentVoice/business/voice_to_text.dart';
 import 'package:flutter/material.dart';
 import 'navigation_drawer.dart' as customDrawer;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'business/sign_to_text.dart';  // Import the Sign to Text screen
+import '../business/emergency_contacts.dart'; 
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -94,7 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       context,
                       "Voice to Sign",
                       Icons.mic,
-                      () {},
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => VoiceToTextScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
@@ -109,15 +117,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     _buildFeatureCard(
                       context,
-                      "Object Detection",
-                      Icons.camera,
-                      () {},
+                      "Emergency Contacts",
+                      Icons.contacts,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EmergencyContactsScreen()),
+                        );
+                      },
                     ),
                     _buildFeatureCard(
                       context,
                       "Language Identification",
                       Icons.language,
-                      () {},
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LanguageIdentificationScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
