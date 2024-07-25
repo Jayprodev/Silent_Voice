@@ -13,7 +13,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
       "text": "Translate text to sign language with ease."
     },
     {
-      "image": "lib/assets/sign-language slide 2.png",
+      "image": "lib/assets/sign-languageslide2.png",
       "text": "Convert sign language to text seamlessly."
     },
     {

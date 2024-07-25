@@ -1,5 +1,5 @@
-// lib/splash.dart
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -11,9 +11,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacementNamed('/brandintro');
-    });
+    _checkLoginStatus();
+  }
+
+  void _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    } else {
+      Timer(Duration(seconds: 5), () {
+        Navigator.of(context).pushReplacementNamed('/brandintro');
+      });
+    }
   }
 
   @override
@@ -27,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Icon(Icons.accessibility, size: 100, color: Colors.white),
             SizedBox(height: 20),
             Text(
-              "Your Learning Partner",
+              "Your communication and learning Partner",
               style: TextStyle(fontSize: 24, color: Colors.white),
             ),
           ],

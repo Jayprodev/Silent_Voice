@@ -1,5 +1,6 @@
 import 'package:SilentVoice/Models/add_contact.dart';
 import 'package:SilentVoice/business/language_identification.dart';
+import 'package:SilentVoice/business/messaging.dart';
 import 'package:SilentVoice/business/sign_to_text.dart';
 import 'package:SilentVoice/business/text_to_sign.dart';
 import 'package:SilentVoice/business/voice_to_text.dart';
@@ -9,11 +10,14 @@ import 'package:SilentVoice/pages/home.dart';
 import 'package:SilentVoice/pages/login.dart';
 import 'package:SilentVoice/pages/settings.dart';
 import 'package:SilentVoice/pages/signup.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -25,6 +29,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
   double _fontSize = 16.0;
+  bool _isLoggedIn = false;
 
   @override
   void initState() {
@@ -39,11 +44,12 @@ class _MyAppState extends State<MyApp> {
       _fontSize = prefs.getDouble('fontSize') ?? 16.0;
     });
   }
-  
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SilentVoice',
-      debugShowCheckedModeBanner: false, // Remove the debug banner
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
@@ -69,32 +75,51 @@ class _MyAppState extends State<MyApp> {
         '/language_identification': (context) => LanguageIdentificationScreen(),
         '/emergency_contacts': (context) => EmergencyContactsScreen(),
         '/settings': (context) => SettingsScreen(),
+        '/messaging': (context) => MessagingScreen(),
       },
     );
   }
 }
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    } else {
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.of(context).pushReplacementNamed('/brandintro');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _requestPermissions();
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, '/brandintro');
-    });
     return Scaffold(
+      backgroundColor: Colors.blue,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.accessibility, size: 100, color: Colors.blue),
+            Icon(Icons.accessibility, size: 100, color: Colors.white),
             SizedBox(height: 20),
             Text(
-              "Your Learning Partner",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
+              "Your communication and Learning Partner",
+              style: TextStyle(fontSize: 24, color: Colors.white),
             ),
           ],
         ),

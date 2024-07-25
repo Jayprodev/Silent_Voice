@@ -1,6 +1,7 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
+    id 'com.google.gms.google-services'
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -23,6 +24,13 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.example.deaf_dumb_app2"
     compileSdkVersion 34  // You can use flutter.compileSdkVersion if it's defined elsewhere
@@ -41,6 +49,15 @@ android {
         targetSdkVersion 34  // You can use flutter.targetSdkVersion if it's defined elsewhere
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
     }
 
     buildTypes {
