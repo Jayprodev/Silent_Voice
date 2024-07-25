@@ -1,5 +1,6 @@
-import 'package:SilentVoice/data/databaseHelper.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,8 +16,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _phoneNumberController = TextEditingController();
   String _disabilityStatus = 'Select';
   final _formKey = GlobalKey<FormState>();
-  final DatabaseHelper _dbHelper = DatabaseHelper();
   bool _isLoading = false;
+  bool _obscureText = true;
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
@@ -31,27 +32,52 @@ class _SignupScreenState extends State<SignupScreen> {
         _isLoading = true;
       });
 
-      Map<String, dynamic> user = {
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'password': _passwordController.text,
-        'phoneNumber': _phoneNumberController.text,
-        'disabilityStatus': _disabilityStatus,
-      };
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
-      await _dbHelper.insertUser(user);
+        // Save additional user data in Firestore
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phoneNumber': _phoneNumberController.text,
+          'disabilityStatus': _disabilityStatus,
+        });
 
-      await Future.delayed(Duration(seconds: 3));
+        // Save user data in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('userEmail', _emailController.text);
+        await prefs.setString('userName', _nameController.text);
 
-      setState(() {
-        _isLoading = false;
-      });
+        setState(() {
+          _isLoading = false;
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Account created successfully')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Account created successfully')),
+        );
 
-      Navigator.of(context).pushReplacementNamed('/login');
+        Navigator.of(context).pushReplacementNamed('/home');
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? "An error occurred")),
+        );
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("An unexpected error occurred")),
+        );
+      }
     }
   }
 
@@ -88,8 +114,18 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 TextFormField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: _obscureText,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your password';
@@ -99,8 +135,18 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  decoration: InputDecoration(labelText: 'Confirm Password'),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: _obscureText,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please confirm your password';
@@ -120,7 +166,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 DropdownButtonFormField<String>(
                   value: _disabilityStatus,
-                  decoration: InputDecoration(labelText: 'Disability Status'),
+                  decoration: InputDecoration(labelText: 'Disability type'),
                   items: ['Select','Deaf', 'Dumb'].map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

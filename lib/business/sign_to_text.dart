@@ -1,3 +1,4 @@
+import 'package:SilentVoice/Models/sign_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -13,6 +14,7 @@ class _SignToTextScreenState extends State<SignToTextScreen> {
   String _translatedText = "";
 
   final picker = ImagePicker();
+  final TextEditingController _messageController = TextEditingController();
 
   Future<void> _getImage(ImageSource source) async {
     try {
@@ -49,6 +51,12 @@ class _SignToTextScreenState extends State<SignToTextScreen> {
     }
   }
 
+  void _onKeyPressed(String letter) {
+    setState(() {
+      _messageController.text += letter;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +68,7 @@ class _SignToTextScreenState extends State<SignToTextScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            if (_image != null) 
+            if (_image != null)
               Image.file(
                 _image!,
                 height: 200,
@@ -89,6 +97,20 @@ class _SignToTextScreenState extends State<SignToTextScreen> {
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
                 textStyle: TextStyle(fontSize: 18),
                 backgroundColor: Colors.blue,
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: _messageController,
+              decoration: InputDecoration(
+                labelText: 'Translated Text',
+              ),
+              readOnly: true,
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: SignKeyboard(
+                onKeyPressed: _onKeyPressed,
               ),
             ),
             SizedBox(height: 20),

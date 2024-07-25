@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -37,12 +38,17 @@ class DatabaseHelper {
     ''');
   }
 
-  // CRUD operations
+  // CRUD operations for SQLite
 
   // Insert user
   Future<int> insertUser(Map<String, dynamic> user) async {
     Database db = await database;
-    return await db.insert('users', user);
+    int id = await db.insert('users', user);
+
+    // Insert user into Firestore
+    await FirebaseFirestore.instance.collection('users').doc(user['email']).set(user);
+
+    return id;
   }
 
   // Get user by email
@@ -56,6 +62,13 @@ class DatabaseHelper {
     if (results.isNotEmpty) {
       return results.first;
     }
+
+    // Fetch from Firestore if not found in SQLite
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(email).get();
+    if (snapshot.exists) {
+      return snapshot.data() as Map<String, dynamic>?;
+    }
+
     return null;
   }
 
@@ -68,17 +81,33 @@ class DatabaseHelper {
   // Update user
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
-    return await db.update(
+    int result = await db.update(
       'users',
       user,
       where: 'id = ?',
       whereArgs: [user['id']],
     );
+
+    // Update user in Firestore
+    await FirebaseFirestore.instance.collection('users').doc(user['email']).update(user);
+
+    return result;
   }
 
   // Delete user
   Future<int> deleteUser(int id) async {
     Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (results.isNotEmpty) {
+      String email = results.first['email'];
+      await FirebaseFirestore.instance.collection('users').doc(email).delete();
+    }
+
     return await db.delete(
       'users',
       where: 'id = ?',

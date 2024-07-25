@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawer extends StatelessWidget {
   @override
@@ -26,49 +27,49 @@ class NavigationDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/home');
+              Navigator.of(context).pushNamed('/home');
             },
           ),
           ListTile(
             leading: Icon(Icons.text_fields),
             title: Text('Text to Sign'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/text_to_sign');
+              Navigator.of(context).pushNamed('/text_to_sign');
             },
           ),
           ListTile(
             leading: Icon(Icons.image),
             title: Text('Image to Sign'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/image_to_sign');
+              Navigator.of(context).pushNamed('/image_to_sign');
             },
           ),
           ListTile(
             leading: Icon(Icons.mic),
             title: Text('Voice to Sign'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/voice_to_sign');
+              Navigator.of(context).pushNamed('/voice_to_sign');
             },
           ),
           ListTile(
             leading: Icon(Icons.translate),
             title: Text('Sign to Text'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/sign_to_text');
+              Navigator.of(context).pushNamed('/sign_to_text');
             },
           ),
           ListTile(
             leading: Icon(Icons.camera),
             title: Text('Emergency Contacts'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/emergency_contacts');
+              Navigator.of(context).pushNamed('/emergency_contacts');
             },
           ),
           ListTile(
             leading: Icon(Icons.language),
             title: Text('Language Identification'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/language_identification');
+              Navigator.of(context).pushNamed('/language_identification');
             },
           ),
           Divider(),
@@ -76,13 +77,15 @@ class NavigationDrawer extends StatelessWidget {
             leading: Icon(Icons.settings),
             title: Text('Settings'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/settings');
+              Navigator.of(context).pushNamed('/settings');
             },
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Log Out'),
-            onTap: () {
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
               Navigator.of(context).pushReplacementNamed('/login');
             },
           ),
